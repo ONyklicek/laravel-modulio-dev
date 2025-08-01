@@ -1,6 +1,6 @@
 {
-    "name": "nyoncode/{!-package_name-!}",
-    "description": "",
+    "name": "nyoncode/laravel-modulio",
+    "description": "Laravel modular package system",
     "authors": [
         {
             "name": "Ondřej Nyklíček",
@@ -12,17 +12,17 @@
     "license": "MIT",
     "require": {
         "php": ">=8.2",
-        "nyoncode/laravel-package-toolkit": "dev-main"
+        "nyoncode/laravel-package-toolkit": "^1.0"
     },
     "autoload": {
         "psr-4": {
-            "NyonCode\\{!-package_namespace-!}\\": "src"
+            "NyonCode\\LaravelModulio\\": "src"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "NyonCode\\{!-package_namespace-!}\\Providers\\SkeletonServiceProvider"
+                "NyonCode\\LaravelModulio\\Providers\\ModulioServiceProvider"
             ]
         }
     },

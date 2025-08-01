@@ -7,7 +7,7 @@ use NyonCode\LaravelPackageToolkit\PackageServiceProvider;
 use Exception;
 
 
-class SkeletonServiceProvider extends PackageServiceProvider
+class ModulioServiceProvider extends PackageServiceProvider
 {
     /**
      * Configures the package. This method is called after the package is registered.
@@ -19,7 +19,7 @@ class SkeletonServiceProvider extends PackageServiceProvider
      */
     public function configure(Packager $packager): void
     {
-        $packager->name('');
+        $packager->name('Laravel Modulio');
     }
 
 }
