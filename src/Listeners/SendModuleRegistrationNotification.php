@@ -3,7 +3,9 @@
 namespace NyonCode\LaravelModulio\Listeners;
 
 use Illuminate\Support\Facades\Log;
+use Mail;
 use NyonCode\LaravelModulio\Events\ModuleRegistered;
+use NyonCode\LaravelModulio\Mail\ModuleRegisteredMail;
 
 /**
  * Listener pro notifikace o registraci modulu
@@ -65,8 +67,8 @@ class SendModuleRegistrationNotification
         // Email sending implementation would be here
         foreach ($recipients as $recipient) {
             try {
-                \Mail::to($recipient)->send(
-                    new \NyonCode\LaravelModulio\Mail\ModuleRegisteredMail($event)
+                Mail::to($recipient)->send(
+                    new ModuleRegisteredMail($event)
                 );
             } catch (\Exception $e) {
                 Log::error('Failed to send module registration email', [

@@ -2,6 +2,8 @@
 
 namespace NyonCode\LaravelModulio\Helpers;
 
+use Illuminate\Support\Str;
+
 /**
  * Helper třída pro práci s moduly
  *
@@ -116,7 +118,7 @@ class ModuleHelper
      */
     public static function getModuleNamespace(string $moduleName, string $vendor = 'App\\Modules'): string
     {
-        return $vendor . '\\' . studly_case($moduleName);
+        return $vendor.'\\'.Str::studly($moduleName);
     }
 
     /**

@@ -54,7 +54,7 @@ trait HasModules
      * @param string $moduleName
      * @return ModuleInterface|null
      */
-    protected function getModule(string $moduleName)
+    protected function getModule(string $moduleName): ?ModuleInterface
     {
         return $this->getModuleManager()->getModule($moduleName);
     }

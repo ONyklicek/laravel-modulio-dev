@@ -4,9 +4,16 @@ namespace NyonCode\LaravelModulio;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 use NyonCode\LaravelModulio\Commands\ModulioClearCacheCommand;
 use NyonCode\LaravelModulio\Commands\ModulioInstallCommand;
 use NyonCode\LaravelModulio\Commands\ModulioListCommand;
+use NyonCode\LaravelModulio\Livewire\ModuleInstallComponent;
+use NyonCode\LaravelModulio\Livewire\ModuleListComponent;
+use NyonCode\LaravelModulio\Livewire\ModuleStatsComponent;
+use NyonCode\LaravelModulio\Livewire\NavigationComponent;
+use NyonCode\LaravelModulio\Middleware\ModulioPermissionMiddleware;
+use NyonCode\LaravelModulio\Middleware\ModulioRateLimitMiddleware;
 
 /**
  * Aktualizovaný hlavní service provider pro Laravel Modulio
@@ -170,24 +177,24 @@ class ModulioServiceProvider extends ServiceProvider
      */
     protected function registerLivewireComponents(): void
     {
-        if (!class_exists(\Livewire\Livewire::class)) {
+        if (!class_exists(Livewire::class)) {
             return;
         }
 
-        \Livewire\Livewire::component('modulio.navigation',
-            \NyonCode\LaravelModulio\Livewire\NavigationComponent::class
+        Livewire::component('modulio.navigation',
+            NavigationComponent::class
         );
 
-        \Livewire\Livewire::component('modulio.module-list',
-            \NyonCode\LaravelModulio\Livewire\ModuleListComponent::class
+        Livewire::component('modulio.module-list',
+            ModuleListComponent::class
         );
 
-        \Livewire\Livewire::component('modulio.module-stats',
-            \NyonCode\LaravelModulio\Livewire\ModuleStatsComponent::class
+        Livewire::component('modulio.module-stats',
+            ModuleStatsComponent::class
         );
 
-        \Livewire\Livewire::component('modulio.module-install',
-            \NyonCode\LaravelModulio\Livewire\ModuleInstallComponent::class
+        Livewire::component('modulio.module-install',
+            ModuleInstallComponent::class
         );
     }
 
@@ -201,12 +208,12 @@ class ModulioServiceProvider extends ServiceProvider
 
         $router->aliasMiddleware(
             'modulio.permission',
-            \NyonCode\LaravelModulio\Middleware\ModulioPermissionMiddleware::class
+            ModulioPermissionMiddleware::class
         );
 
         $router->aliasMiddleware(
             'modulio.rate-limit',
-            \NyonCode\LaravelModulio\Middleware\ModulioRateLimitMiddleware::class
+            ModulioRateLimitMiddleware::class
         );
     }
 
@@ -297,9 +304,9 @@ class ModulioServiceProvider extends ServiceProvider
      * Registruje modulio-specific providers
      * Register modulio-specific providers
      *
-     * @param array|string $providers
+     * @param  array|string  $providers
      */
-    protected function registerModulioProviders($providers): void
+    protected function registerModulioProviders(array|string $providers): void
     {
         if (!is_array($providers)) {
             $providers = [$providers];
@@ -333,9 +340,9 @@ class ModulioServiceProvider extends ServiceProvider
      * Registruje standardní providers s Modulio podporou
      * Register standard providers with Modulio support
      *
-     * @param array|string $providers
+     * @param  array|string  $providers
      */
-    protected function registerStandardProvidersWithModulioSupport($providers): void
+    protected function registerStandardProvidersWithModulioSupport(array|string $providers): void
     {
         if (!is_array($providers)) {
             $providers = [$providers];

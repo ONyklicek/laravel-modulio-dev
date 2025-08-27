@@ -145,7 +145,7 @@ class NavigationComponent extends Component
      * @param string $currentRoute
      * @return bool
      */
-    protected function isItemActive($item, string $currentRoute): bool
+    protected function isItemActive(mixed $item, string $currentRoute): bool
     {
         if (method_exists($item, 'getRoute') && $item->getRoute() === $currentRoute) {
             return true;
@@ -191,7 +191,7 @@ class NavigationComponent extends Component
      *
      * @return View
      */
-    public function render()
+    public function render(): View
     {
         $templatePath = config("modulio.navigation_templates.{$this->template}", 'modulio::livewire.navigation');
 

@@ -177,7 +177,7 @@ class ModuleListComponent extends Component
      *
      * @return Collection
      */
-    public function getFilteredModules()
+    public function getFilteredModules(): Collection
     {
         $moduleManager = app(ModuleManager::class);
         $modules = $moduleManager->getModules();
@@ -334,7 +334,7 @@ class ModuleListComponent extends Component
      *
      * @return View
      */
-    public function render()
+    public function render(): View
     {
         $modules = $this->getFilteredModules();
 

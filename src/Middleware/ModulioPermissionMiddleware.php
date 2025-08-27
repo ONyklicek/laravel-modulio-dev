@@ -66,7 +66,7 @@ class ModulioPermissionMiddleware
      * @param Request $request
      * @return JsonResponse|RedirectResponse|Response
      */
-    protected function handleUnauthenticated(Request $request)
+    protected function handleUnauthenticated(Request $request): Response|JsonResponse|RedirectResponse
     {
         if ($request->expectsJson()) {
             return response()->json([
@@ -87,7 +87,11 @@ class ModulioPermissionMiddleware
      * @param mixed $user
      * @return JsonResponse|RedirectResponse|Response
      */
-    protected function handleUnauthorized(Request $request, string $permission, $user)
+    protected function handleUnauthorized(
+        Request $request,
+        string $permission,
+        mixed $user
+    ): Response|JsonResponse|RedirectResponse
     {
         // Logování neautorizovaného přístupu
         // Log unauthorized access
@@ -127,7 +131,7 @@ class ModulioPermissionMiddleware
      * @param string $permission
      * @param mixed $user
      */
-    protected function logAccess(Request $request, string $permission, $user): void
+    protected function logAccess(Request $request, string $permission, mixed $user): void
     {
         if (!config('modulio.log_events', true)) {
             return;

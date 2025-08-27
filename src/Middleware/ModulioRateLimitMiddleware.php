@@ -34,7 +34,7 @@ class ModulioRateLimitMiddleware
      * @param int $decayMinutes Doba resetování v minutách
      * @return mixed
      */
-    public function handle(Request $request, Closure $next, int $maxAttempts = 60, int $decayMinutes = 1)
+    public function handle(Request $request, Closure $next, int $maxAttempts = 60, int $decayMinutes = 1): mixed
     {
         $key = $this->resolveRequestSignature($request);
 
@@ -81,7 +81,11 @@ class ModulioRateLimitMiddleware
      * @param int $decayMinutes
      * @return JsonResponse|Response
      */
-    protected function handleTooManyAttempts(Request $request, int $maxAttempts, int $decayMinutes)
+    protected function handleTooManyAttempts(
+        Request $request,
+        int $maxAttempts,
+        int $decayMinutes
+    ): Response|JsonResponse
     {
         if ($request->expectsJson()) {
             return response()->json([
@@ -103,7 +107,7 @@ class ModulioRateLimitMiddleware
      * @param int $decayMinutes
      * @return mixed
      */
-    protected function addHeaders($response, int $maxAttempts, int $currentAttempts, int $decayMinutes)
+    protected function addHeaders(mixed $response, int $maxAttempts, int $currentAttempts, int $decayMinutes): mixed
     {
         $response->headers->add([
             'X-RateLimit-Limit' => $maxAttempts,
