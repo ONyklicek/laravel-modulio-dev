@@ -2,74 +2,125 @@
 
 namespace NyonCode\LaravelModulio\Navigation;
 
-use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-
+/**
+ * Navigační položka
+ *
+ * Reprezentuje jednu položku v navigačním menu.
+ * Podporuje ikony, routy, oprávnění a řazení.
+ *
+ * @package NyonCode\LaravelModulio\Navigation
+ *
+ * ---
+ *
+ * Navigation Item
+ *
+ * Represents one item in navigation menu.
+ * Supports icons, routes, permissions and ordering.
+ */
 class NavigationItem
 {
-    protected string $name;
-    protected string $label;
-    protected string|null $route = null;
-    protected string|null $url = null;
-    protected string|null $icon = null;
-    protected array $permissions = [];
+    /**
+     * Název položky
+     * Item title
+     *
+     * @var string
+     */
+    protected string $title;
+
+    /**
+     * Ikona položky
+     * Item icon
+     *
+     * @var string|null
+     */
+    protected ?string $icon = null;
+
+    /**
+     * Název routy
+     * Route name
+     *
+     * @var string|null
+     */
+    protected ?string $route = null;
+
+    /**
+     * URL
+     *
+     * @var string|null
+     */
+    protected ?string $url = null;
+
+    /**
+     * Pořadí položky
+     * Item order
+     *
+     * @var int
+     */
     protected int $order = 100;
-    protected Collection $children;
+
+    /**
+     * Vyžadovaná oprávnění
+     * Required permissions
+     *
+     * @var array<string>
+     */
+    protected array $permissions = [];
+
+    /**
+     * CSS třídy
+     * CSS classes
+     *
+     * @var array<string>
+     */
+    protected array $classes = [];
+
+    /**
+     * Další atributy
+     * Additional attributes
+     *
+     * @var array<string, mixed>
+     */
     protected array $attributes = [];
-    protected bool $active = false;
-    protected NavigationItem|null $parent = null;
-
-
-    public function __construct(string $name, string|null $label = null)
-    {
-        $this->name = $name;
-        $this->label = $label ?? Str::ucfirst($name);
-        $this->children = new Collection();
-    }
 
     /**
-     * Set label
+     * Badge/štítek
+     * Badge/label
      *
-     * @param string $label
-     * @return $this
+     * @var string|null
      */
-    public function label(string $label): self
-    {
-        $this->label = $label;
-        return $this;
-    }
+    protected ?string $badge = null;
 
     /**
-     * Set route
+     * Skupina do které položka patří
+     * Group the item belongs to
      *
-     * @param string $route
-     * @param array $parameters
-     * @return $this
+     * @var string|null
      */
-    public function route(string $route, array $parameters = []): self
+    protected ?string $group = null;
+
+    public function __construct(string $title)
     {
-        $this->route = $route;
-        $this->attributes['route_parameters'] = $parameters;
-        return $this;
+        $this->title = $title;
     }
 
     /**
-     * Set url
+     * Vytvoří novou instanci
+     * Creates new instance
      *
-     * @param string $url
-     * @return $this
+     * @param string $title
+     * @return static
      */
-    public function url(string $url): self
+    public static function make(string $title): static
     {
-        $this->url = $url;
-        return $this;
+        return new static($title);
     }
 
     /**
-     * Set icon
+     * Nastaví ikonu
+     * Sets icon
      *
      * @param string $icon
-     * @return $this
+     * @return self
      */
     public function icon(string $icon): self
     {
@@ -78,19 +129,34 @@ class NavigationItem
     }
 
     /**
-     * Set permission
+     * Nastaví routu
+     * Sets route
      *
-     * @param string|array $permissions
-     * @return $this
+     * @param string $route
+     * @return self
      */
-    public function permissions(string|array $permissions): self
+    public function route(string $route): self
     {
-        $this->permissions = is_array($permissions) ? $permissions : [$permissions];
+        $this->route = $route;
         return $this;
     }
 
     /**
-     * Set order
+     * Nastaví URL
+     * Sets URL
+     *
+     * @param string $url
+     * @return self
+     */
+    public function url(string $url): self
+    {
+        $this->url = $url;
+        return $this;
+    }
+
+    /**
+     * Nastaví pořadí
+     * Sets order
      *
      * @param int $order
      * @return self
@@ -102,83 +168,235 @@ class NavigationItem
     }
 
     /**
-     * Set active
+     * Přidá oprávnění
+     * Adds permission
      *
-     * @param bool $active
-     * @return $this
+     * @param string $permission
+     * @return self
      */
-    public function active(bool $active = true): self
+    public function permission(string $permission): self
     {
-        $this->active = $active;
+        $this->permissions[] = $permission;
         return $this;
     }
 
     /**
-     * Check if user can access this menu item
+     * Přidá více oprávnění
+     * Adds multiple permissions
      *
+     * @param array<string> $permissions
+     * @return self
+     */
+    public function permissions(array $permissions): self
+    {
+        $this->permissions = array_merge($this->permissions, $permissions);
+        return $this;
+    }
+
+    /**
+     * Přidá CSS třídu
+     * Adds CSS class
+     *
+     * @param string $class
+     * @return self
+     */
+    public function class(string $class): self
+    {
+        $this->classes[] = $class;
+        return $this;
+    }
+
+    /**
+     * Přidá více CSS tříd
+     * Adds multiple CSS classes
+     *
+     * @param array<string> $classes
+     * @return self
+     */
+    public function classes(array $classes): self
+    {
+        $this->classes = array_merge($this->classes, $classes);
+        return $this;
+    }
+
+    /**
+     * Nastaví atribut
+     * Sets attribute
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return self
+     */
+    public function attribute(string $key, mixed $value): self
+    {
+        $this->attributes[$key] = $value;
+        return $this;
+    }
+
+    /**
+     * Nastaví více atributů
+     * Sets multiple attributes
+     *
+     * @param array<string, mixed> $attributes
+     * @return self
+     */
+    public function attributes(array $attributes): self
+    {
+        $this->attributes = array_merge($this->attributes, $attributes);
+        return $this;
+    }
+
+    /**
+     * Nastaví badge/štítek
+     * Sets badge/label
+     *
+     * @param string $badge
+     * @return self
+     */
+    public function badge(string $badge): self
+    {
+        $this->badge = $badge;
+        return $this;
+    }
+
+    /**
+     * Nastaví skupinu
+     * Sets group
+     *
+     * @param string $group
+     * @return self
+     */
+    public function group(string $group): self
+    {
+        $this->group = $group;
+        return $this;
+    }
+
+    /**
+     * Kontroluje oprávnění uživatele
+     * Checks user permissions
+     *
+     * @param array $userPermissions
      * @return bool
      */
-    public function canAccess(): bool
+    public function isAuthorized(array $userPermissions = []): bool
     {
         if (empty($this->permissions)) {
             return true;
         }
 
-        if (!auth()->check()) {
-            return false;
-        }
-
-        foreach ($this->permissions as $permission) {
-            if (!auth()->user()->can($permission)) {
-                return false;
-            }
-        }
-
-        return true;
+        return !empty(array_intersect($this->permissions, $userPermissions));
     }
 
     /**
-     * Check if menu item is active
+     * Vrací URL položky
+     * Returns item URL
      *
-     * @return bool
+     * @return string|null
      */
-    public function isActive(): bool
+    public function getUrl(): ?string
     {
-        if ($this->active) {
-            return true;
+        if ($this->url) {
+            return $this->url;
         }
 
-        if ($this->route && request()->routeIs($this->route)) {
-            return true;
+        if ($this->route) {
+            return route($this->route);
         }
 
-        if ($this->url && request()->is(trim($this->url, '/'))) {
-            return true;
-        }
+        return null;
+    }
 
-        // Check children
-        return $this->children->contains(function (MenuItem $child) {
-            return $child->isActive();
-        });
+    // Gettery
+
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    public function getIcon(): ?string
+    {
+        return $this->icon;
+    }
+
+    public function getRoute(): ?string
+    {
+        return $this->route;
+    }
+
+    public function getOrder(): int
+    {
+        return $this->order;
+    }
+
+    public function getPermissions(): array
+    {
+        return $this->permissions;
+    }
+
+    public function getClasses(): array
+    {
+        return $this->classes;
+    }
+
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
+    public function getBadge(): ?string
+    {
+        return $this->badge;
+    }
+
+    public function getGroup(): ?string
+    {
+        return $this->group;
     }
 
     /**
-     * |Getters
-     * |---
+     * Serializace pro cache
+     * Serialization for cache
+     *
+     * @return array
      */
-    public function getName(): string { return $this->name; }
-    public function getLabel(): string { return $this->label; }
-    public function getRoute(): ?string { return $this->route; }
-    public function getIcon(): ?string { return $this->icon; }
-    public function getPermissions(): array { return $this->permissions; }
-    public function getOrder(): int { return $this->order; }
-    public function getChildren(): Collection { return $this->children; }
-    public function getAttributes(): array { return $this->attributes; }
+    public function toArray(): array
+    {
+        return [
+            'type' => 'item',
+            'title' => $this->title,
+            'icon' => $this->icon,
+            'route' => $this->route,
+            'url' => $this->url,
+            'order' => $this->order,
+            'permissions' => $this->permissions,
+            'classes' => $this->classes,
+            'attributes' => $this->attributes,
+            'badge' => $this->badge,
+            'group' => $this->group,
+        ];
+    }
 
     /**
-     * | Setters for conflict resolution
-     * |---
+     * Deserializace z cache
+     * Deserialization from cache
+     *
+     * @param array $data
+     * @return static
      */
-    public function setOrder(int $order): void { $this->order = $order; }
+    public static function fromArray(array $data): static
+    {
+        $item = new static($data['title']);
+        $item->icon = $data['icon'] ?? null;
+        $item->route = $data['route'] ?? null;
+        $item->url = $data['url'] ?? null;
+        $item->order = $data['order'] ?? 100;
+        $item->permissions = $data['permissions'] ?? [];
+        $item->classes = $data['classes'] ?? [];
+        $item->attributes = $data['attributes'] ?? [];
+        $item->badge = $data['badge'] ?? null;
+        $item->group = $data['group'] ?? null;
 
+        return $item;
+    }
 }

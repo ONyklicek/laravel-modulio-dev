@@ -5,4 +5,13 @@
       <list />
     </option>
   </component>
+  <component name="LaravelIdeaMainSettings">
+    <option name="appDirectory" value="src" />
+    <option name="frameworkFound" value="true" />
+    <option name="translation">
+      <LaravelTranslation>
+        <option name="defaultPath" value="lang" />
+      </LaravelTranslation>
+    </option>
+  </component>
 </project>
